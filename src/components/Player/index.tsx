@@ -29,4 +29,37 @@ update() {
     player.velocity.y += gravity * timeElapsed
 }
 
+///////////////////////////////////////// PHYSISCS ENGINE
+v = vi + a.t
+x - xi = vi + 0.5 a.t²
+F = m.a
+
+Object {
+    vector3 Position
+    vector3 Velocity
+    vector3 Force
+    float Mass
+}
+vector3 Gravity  = vector3(0, -9.8, 0)
+Object.Force = Mass * Gravity
+Object.Velocity += Force / Mass * dt
+Object.Position += Velocity * dt
+
+///////////////////////////////////////// COLLISION DETECTION
+CollisionPoints {
+    vector3 Origin
+    vector3 Target
+    vector3 Normal // Target - Origin Normalized
+    float Depth //  Target - Origin Length
+    bool HasCollision
+}
+Transform {
+    vector3 Position
+    vector3 Scale
+    quaternion Rotation
+}
+
+TestCollision
+
+'https://www.gstatic.com/draco/v1/decoders/'
 */

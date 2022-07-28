@@ -1,44 +1,30 @@
-import { useFrame } from "@react-three/fiber"
 import { useState } from "react"
-import { Color, PlaneBufferGeometry, ShaderMaterial } from "three"
+import { Mesh, MeshPhysicalMaterial, PlaneBufferGeometry } from "three"
 
-const vertexShader = `
-varying float vY;
-void main() {
-    vec4 modelPosition = modelMatrix * vec4(position, 1.);
-  vY = modelPosition.y;
-  gl_Position = projectionMatrix * viewMatrix * modelPosition;
-}
-`
+const material = new MeshPhysicalMaterial({
+  roughness: 0,
+  metalness: 0,
+  clearcoat: 3,
+  clearcoatRoughness: 1
+})
+material.onBeforeCompile = shader =>
+  (shader.fragmentShader = shader.fragmentShader.replace(
+    /vec4 diffuseColor.*;/,
+    ` vec4 diffuseColor = vec4(vNormal*0.5 +.3, 1.);`
+  ))
 
-const fragmentShader = `
-uniform vec3 u_colorA;
-uniform vec3 u_colorB;
-varying float vY;
-void main() { 
-  vec3 color = mix(u_colorA, u_colorB, vY * 2. + .5);
-  gl_FragColor = vec4(color,1.0);
-}
-`
-const uniforms = {
-  u_colorA: { value: new Color("#FFE486") },
-  u_colorB: { value: new Color("#FEB3D9") }
-}
-const material = new ShaderMaterial({ fragmentShader, vertexShader, uniforms })
-const geometry = new PlaneBufferGeometry(1.5, 1.5, 32, 32)
+const geometry = new PlaneBufferGeometry(20, 20, 20, 20)
 geometry.rotateX(-Math.PI / 2)
 geometry.computeVertexNormals()
-;(() => {
-  const { position } = geometry.attributes
-  new Array(position.count).fill("").forEach((value, index) => {
-    const x = position.getX(index)
-    const y = position.getY(index)
-    const z = position.getZ(index)
-    position.setY(index, y + 0.1 * (Math.sin(x * 5) + Math.sin(z * 6)))
-  })
-})()
-
-// colider
+const { position } = geometry.attributes
+new Array(position.count).fill("").forEach((value, index) => {
+  const x = position.getX(index)
+  const y = position.getY(index)
+  const z = position.getZ(index)
+  position.setY(index, y + (Math.sin(x / 2) + Math.sin(z / 2)))
+})
+position.needsUpdate = true
+geometry.computeVertexNormals()
 
 export default () => {
   const [entityState, setEntityState] = useState<Mesh>(null!)

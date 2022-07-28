@@ -4,7 +4,6 @@ import {
   ACESFilmicToneMapping,
   Color,
   EquirectangularReflectionMapping,
-  Fog,
   sRGBEncoding
 } from "three"
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader"
@@ -25,7 +24,6 @@ const useSetupScene = () => {
     gl.shadowMap.enabled = true
     gl.setPixelRatio(Math.min(devicePixelRatio, 2) * 0.9)
     scene.background = new Color("rgb(240, 190, 180)")
-    scene.fog = new Fog("rgb(240, 190, 180)", 0, 50)
     scene.environment = new RGBELoader().load(
       "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/empty_warehouse_01_1k.hdr",
       hdri => {
